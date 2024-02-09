@@ -1,11 +1,18 @@
 import Container from "@/components/atoms/Container";
+import Header from "@/components/atoms/Header";
 import TextBox from "@/components/atoms/TextBox";
-import Header from "@/components/molecules/Header";
+import Navbar from "@/components/molecules/Navbar";
+import { useAppDispatch, useAppSelector } from "@/hooks/store";
+import { authSelector, register, reset } from "@/store/auth/authSlice";
 import { Person } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 function Register() {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -14,6 +21,20 @@ function Register() {
   });
 
   const { name, email, password, password2 } = formData;
+  const { user, isLoading, isError, isSuccess, message } =
+    useAppSelector(authSelector);
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+
+    if (isSuccess || user) {
+      router.push("/");
+    }
+
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, router, dispatch]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState) => ({
@@ -22,14 +43,30 @@ function Register() {
     }));
   };
 
+  const onSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    if (password !== password2) toast.error("Passwords do not match");
+    else {
+      const userData = {
+        name,
+        email,
+        password,
+      };
+
+      dispatch(register(userData));
+    }
+  };
+
   return (
     <Container>
-      <Header />
+      <Navbar />
       <section className="heading">
-        <h1>
-          <Person sx={{ fontSize: "inherit" }} />
-          Register
-        </h1>
+        <Header
+          title="Register"
+          subtitle="Please create an account"
+          icon={<Person sx={{ fontSize: "inherit", marginRight: "16px" }} />}
+        />
       </section>
       <section className="form">
         <div className="form-group">
@@ -71,8 +108,12 @@ function Register() {
             type="password"
           ></TextBox>
         </div>
-        <Button variant="contained" sx={{ width: "100%" }}>
-          Submit
+        <Button
+          variant="contained"
+          sx={{ width: "100%", height: "52px" }}
+          onClick={onSubmit}
+        >
+          {isLoading ? <CircularProgress sx={{ color: "white" }} /> : "Submit"}
         </Button>
       </section>
     </Container>

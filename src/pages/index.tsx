@@ -1,9 +1,15 @@
 import Head from "next/head";
-import styles from "@/styles/Home.module.css";
-import Header from "@/components/molecules/Header";
+import Navbar from "@/components/molecules/Navbar";
 import Container from "@/components/atoms/Container";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
+import Header from "@/components/atoms/Header";
 
 export default function Home() {
+  // const { user } = useSelector((state) => state.auth);
+  const router = useRouter();
+
   return (
     <>
       <Head>
@@ -14,10 +20,8 @@ export default function Home() {
       </Head>
       <main>
         <Container>
-          <Header />
-          <section className="heading">
-            <h1>Dashboard</h1>
-          </section>
+          <Navbar />
+          <Header title="Dashboard" />
         </Container>
       </main>
     </>
