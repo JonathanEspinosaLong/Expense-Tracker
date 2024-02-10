@@ -2,13 +2,42 @@ import Head from "next/head";
 import Navbar from "@/components/molecules/Navbar";
 import Container from "@/components/atoms/Container";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import Header from "@/components/atoms/Header";
+import Heading from "@/components/atoms/Heading";
+import { useAppDispatch, useAppSelector } from "@/hooks/store";
+import { authSelector } from "@/store/auth/authSlice";
+import {
+  expensesSelector,
+  getExpenses,
+  expensesReset,
+} from "@/store/expenses/expensesSlice";
+import { CircularProgress } from "@mui/material";
+import ExpenseItem from "@/components/molecules/ExpenseItem";
+import ExpenseForm from "@/components/molecules/ExpenseForm";
 
 export default function Home() {
-  // const { user } = useSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector(authSelector);
+  const { expenses, isError, isLoading, message } =
+    useAppSelector(expensesSelector);
+
   const router = useRouter();
+  if (typeof window !== "undefined" && !user) {
+    router.push("/login");
+  }
+
+  useEffect(() => {
+    if (isError) console.log(message);
+
+    if (typeof window !== "undefined" && !user) {
+      router.push("/login");
+    }
+
+    dispatch(getExpenses());
+    return () => {
+      dispatch(expensesReset());
+    };
+  }, [user, router]);
 
   return (
     <>
@@ -18,11 +47,32 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <main
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
         <Container>
           <Navbar />
-          <Header title="Dashboard" />
+          <Heading
+            title={`Welcome ${user?.name}`}
+            subtitle="Expenses Dashboard"
+          />
         </Container>
+        <ExpenseForm />
+        {isLoading ? (
+          <CircularProgress />
+        ) : expenses.length > 0 ? (
+          <div className="expenses">
+            {expenses.map((expense: any) => (
+              <ExpenseItem key={expense._id} expense={expense} />
+            ))}
+          </div>
+        ) : (
+          <h3>You have not set any expenses</h3>
+        )}
       </main>
     </>
   );

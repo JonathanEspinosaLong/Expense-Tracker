@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const goalSchema = new mongoose.Schema(
+const expenseSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -15,4 +15,4 @@ const goalSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Goal", goalSchema);
+module.exports = mongoose.model("Expense", expenseSchema);

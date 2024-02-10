@@ -1,9 +1,9 @@
 import Container from "@/components/atoms/Container";
-import Header from "@/components/atoms/Header";
+import Heading from "@/components/atoms/Heading";
 import TextBox from "@/components/atoms/TextBox";
 import Navbar from "@/components/molecules/Navbar";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
-import { authSelector, login, reset } from "@/store/auth/authSlice";
+import { authSelector, login, authReset } from "@/store/auth/authSlice";
 import { Login } from "@mui/icons-material";
 import { Button, CircularProgress } from "@mui/material";
 import { useRouter } from "next/router";
@@ -31,7 +31,7 @@ function LoginPage() {
       router.push("/");
     }
 
-    dispatch(reset());
+    dispatch(authReset());
   }, [user, isError, isSuccess, message, router, dispatch]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +41,7 @@ function LoginPage() {
     }));
   };
 
-  const onSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const userData = {
@@ -55,41 +55,45 @@ function LoginPage() {
   return (
     <Container>
       <Navbar />
-      <section className="heading">
-        <Header
-          title="Login"
-          subtitle="Login and start setting goals"
-          icon={<Login sx={{ fontSize: "inherit", marginRight: "16px" }} />}
-        />
-      </section>
+      <Heading
+        title="Login"
+        subtitle="Login and start setting expenses"
+        icon={<Login sx={{ fontSize: "inherit", marginRight: "16px" }} />}
+      />
       <section className="form">
-        <div className="form-group">
-          <TextBox
-            id="email"
-            name="email"
-            value={email}
-            placeholder="Enter your email"
-            onChange={onChange}
-            type="email"
-          ></TextBox>
-        </div>
-        <div className="form-group">
-          <TextBox
-            id="password"
-            name="password"
-            value={password}
-            placeholder="Enter password"
-            onChange={onChange}
-            type="password"
-          ></TextBox>
-        </div>
-        <Button
-          variant="contained"
-          sx={{ width: "100%", height: "52px" }}
-          onClick={onSubmit}
-        >
-          {isLoading ? <CircularProgress sx={{ color: "white" }} /> : "Submit"}
-        </Button>
+        <form onSubmit={onSubmit}>
+          <div className="form-group">
+            <TextBox
+              id="email"
+              name="email"
+              value={email}
+              placeholder="Enter your email"
+              onChange={onChange}
+              type="email"
+            ></TextBox>
+          </div>
+          <div className="form-group">
+            <TextBox
+              id="password"
+              name="password"
+              value={password}
+              placeholder="Enter password"
+              onChange={onChange}
+              type="password"
+            ></TextBox>
+          </div>
+          <Button
+            variant="contained"
+            sx={{ width: "100%", height: "52px" }}
+            type="submit"
+          >
+            {isLoading ? (
+              <CircularProgress sx={{ color: "white" }} />
+            ) : (
+              "Submit"
+            )}
+          </Button>
+        </form>
       </section>
     </Container>
   );

@@ -1,15 +1,15 @@
 import React from "react";
 
-function Header(props: TitleProps) {
+function Heading(props: TitleProps) {
   const { title, subtitle, icon } = props;
   return (
-    <>
+    <section className="heading">
       <h1>
         {icon}
         {title}
       </h1>
       <p>{subtitle}</p>
-    </>
+    </section>
   );
 }
 
@@ -19,4 +19,4 @@ export interface TitleProps {
   icon?: React.ReactNode;
 }
 
-export default Header;
+export default Heading;

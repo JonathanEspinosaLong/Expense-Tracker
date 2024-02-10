@@ -14,7 +14,7 @@ app.use(express.json());
 // Middleware that parses incoming requests with URL-encoded payloads
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/api/goals", require("./routes/goalRoutes"));
+app.use("/api/expenses", require("./routes/expensesRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 
 app.use(errorHandler);

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Login, Logout, Person } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
-import { authSelector, reset, logout } from "@/store/auth/authSlice";
+import { authSelector, authReset, logout } from "@/store/auth/authSlice";
 
 function Navbar() {
   const router = useRouter();
@@ -12,14 +12,14 @@ function Navbar() {
 
   const onLogout = () => {
     dispatch(logout());
-    dispatch(reset());
+    dispatch(authReset());
     router.push("/");
   };
 
   return (
     <header className="header">
       <div className="logo">
-        <Link href="/">GoalSetter</Link>
+        <Link href="/">ExpenseTracker</Link>
       </div>
       <ul>
         {user ? (
@@ -29,17 +29,19 @@ function Navbar() {
             </button>
           </li>
         ) : (
-          <li>
-            <Link href="/login">
-              <Login /> Login
-            </Link>
-          </li>
+          <>
+            <li>
+              <Link href="/login">
+                <Login /> Login
+              </Link>
+            </li>
+            <li>
+              <Link href="/register">
+                <Person /> Register
+              </Link>
+            </li>
+          </>
         )}
-        <li>
-          <Link href="/register">
-            <Person /> Register
-          </Link>
-        </li>
       </ul>
     </header>
   );

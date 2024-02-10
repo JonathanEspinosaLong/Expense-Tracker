@@ -1,9 +1,9 @@
 import Container from "@/components/atoms/Container";
-import Header from "@/components/atoms/Header";
+import Heading from "@/components/atoms/Heading";
 import TextBox from "@/components/atoms/TextBox";
 import Navbar from "@/components/molecules/Navbar";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
-import { authSelector, register, reset } from "@/store/auth/authSlice";
+import { authSelector, register, authReset } from "@/store/auth/authSlice";
 import { Person } from "@mui/icons-material";
 import { Button, CircularProgress } from "@mui/material";
 import { useRouter } from "next/navigation";
@@ -33,7 +33,7 @@ function Register() {
       router.push("/");
     }
 
-    dispatch(reset());
+    dispatch(authReset());
   }, [user, isError, isSuccess, message, router, dispatch]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +43,7 @@ function Register() {
     }));
   };
 
-  const onSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (password !== password2) toast.error("Passwords do not match");
@@ -61,60 +61,64 @@ function Register() {
   return (
     <Container>
       <Navbar />
-      <section className="heading">
-        <Header
-          title="Register"
-          subtitle="Please create an account"
-          icon={<Person sx={{ fontSize: "inherit", marginRight: "16px" }} />}
-        />
-      </section>
+      <Heading
+        title="Register"
+        subtitle="Please create an account"
+        icon={<Person sx={{ fontSize: "inherit", marginRight: "16px" }} />}
+      />
       <section className="form">
-        <div className="form-group">
-          <TextBox
-            id="name"
-            name="name"
-            value={name}
-            placeholder="Enter your name"
-            onChange={onChange}
-          ></TextBox>
-        </div>
-        <div className="form-group">
-          <TextBox
-            id="email"
-            name="email"
-            value={email}
-            placeholder="Enter your email"
-            onChange={onChange}
-            type="email"
-          ></TextBox>
-        </div>
-        <div className="form-group">
-          <TextBox
-            id="password"
-            name="password"
-            value={password}
-            placeholder="Enter password"
-            onChange={onChange}
-            type="password"
-          ></TextBox>
-        </div>
-        <div className="form-group">
-          <TextBox
-            id="password2"
-            name="password2"
-            value={password2}
-            placeholder="Confirm password"
-            onChange={onChange}
-            type="password"
-          ></TextBox>
-        </div>
-        <Button
-          variant="contained"
-          sx={{ width: "100%", height: "52px" }}
-          onClick={onSubmit}
-        >
-          {isLoading ? <CircularProgress sx={{ color: "white" }} /> : "Submit"}
-        </Button>
+        <form onSubmit={onSubmit}>
+          <div className="form-group">
+            <TextBox
+              id="name"
+              name="name"
+              value={name}
+              placeholder="Enter your name"
+              onChange={onChange}
+            ></TextBox>
+          </div>
+          <div className="form-group">
+            <TextBox
+              id="email"
+              name="email"
+              value={email}
+              placeholder="Enter your email"
+              onChange={onChange}
+              type="email"
+            ></TextBox>
+          </div>
+          <div className="form-group">
+            <TextBox
+              id="password"
+              name="password"
+              value={password}
+              placeholder="Enter password"
+              onChange={onChange}
+              type="password"
+            ></TextBox>
+          </div>
+          <div className="form-group">
+            <TextBox
+              id="password2"
+              name="password2"
+              value={password2}
+              placeholder="Confirm password"
+              onChange={onChange}
+              type="password"
+            ></TextBox>
+          </div>
+          <Button
+            variant="contained"
+            sx={{ width: "100%", height: "52px" }}
+            type="submit"
+          >
+            {isLoading ? (
+              <CircularProgress sx={{ color: "white" }} />
+            ) : (
+              "Submit"
+            )}
+          </Button>
+        </form>
       </section>
     </Container>
   );
